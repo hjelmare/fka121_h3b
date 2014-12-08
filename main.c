@@ -2,11 +2,12 @@
 #include <math.h>
 #include <stdlib.h>
 #include <time.h>
+#include "mg_func.h"
 
 int main() {
   clock_t end, start = clock();
 
-  int nPoints = 101;
+  int nPoints = 11;
   double chargeSeparation = 0.2;
   double totalLength = 1;
   double cellLength = totalLength / (nPoints - 1);
@@ -29,17 +30,14 @@ int main() {
   rho[nPoints / 2 + chargeOffset][nPoints / 2 ] = 1.0 / pow(cellLength,2);
   rho[nPoints / 2 - chargeOffset][nPoints / 2 ] = -1.0 / pow(cellLength,2);
 
-  while ( maxDiff > tolerance ) {
-    maxDiff = 0;
-    for ( x = 1 ; x < nPoints-1 ; x++ ) {
-      for ( y = 1 ; y < nPoints-1; y++ ) {
-        oldValue = grid[x][y];
-        grid[x][y] = 1.0/4.0 * (grid[x+1][y] + grid[x-1][y] + grid[x][y+1] + grid[x][y-1] - pow(cellLength,2)*rho[x][y]);
-        diff = fabs(oldValue - grid[x][y]);
-        maxDiff = diff > maxDiff ? diff : maxDiff;
-      }
-    }
-  }
+  // setting up the problem still belongs here, as does the structuring of the multigrid
+  // so what needs to happen here is defining the two grid sizes, running GS on one of them
+  // then, we need an interpolating function in mg_func.c to change grids, then we run GS again
+  // from here, and that needs to be in a loop
+  //
+  // also, the GS function is wrong, it shouldn't run to a tolerance, just do one iteration...
+  //
+  GaussSeidel( nPoints, cellLength, grid, rho, tolerance );
 
   end = clock();    // we're not really interested in the time to save the data
 
