@@ -14,6 +14,7 @@ int main() {
   int chargeOffset = chargeSeparation / 2 * (nPoints - 1)/totalLength;
 
   double grid[nPoints][nPoints];
+  double denseGrid[2*nPoints-1][2*nPoints-1];
   double rho[nPoints][nPoints];
   int x, y;
   double diff, oldValue;
@@ -34,12 +35,15 @@ int main() {
   // so what needs to happen here is defining the two grid sizes, running GS on one of them
   // then, we need an interpolating function in mg_func.c to change grids, then we run GS again
   // from here, and that needs to be in a loop
-  //
-  // also, the GS function is wrong, it shouldn't run to a tolerance, just do one iteration...
-  //
-  GaussSeidel( nPoints, cellLength, grid, rho, tolerance );
+
+  while(maxDiff > tolerance) {
+    maxDiff = GaussSeidel( nPoints, cellLength, grid, rho);
+  }
 
   end = clock();    // we're not really interested in the time to save the data
+
+  IncreaseGridDensity(nPoints, grid, denseGrid);
+  DecreaseGridDensity(2*nPoints-1, denseGrid, grid);
 
   FILE *fGrid = fopen("grid.data","w");
 
