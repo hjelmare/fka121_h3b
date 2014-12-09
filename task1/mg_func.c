@@ -64,4 +64,21 @@ void DecreaseGridDensity(int nPoints, double inGrid[nPoints][nPoints], double ou
   return;
 }
 
+void ComputeResidual(int nPoints, double cellLength, double grid[nPoints][nPoints], \
+                          double rho[nPoints][nPoints], double residual[nPoints][nPoints]) {
+  double oldValue, diff;
+  int x,y;
+  double tolerance = 0.00001;
+  double maxDiff = 2*tolerance;
+
+  for ( x = 1 ; x < nPoints - 1 ; x++ ) {
+    for ( y = 1 ; y < nPoints - 1 ; y++ ) {
+      residual[x][y] = rho[x][y] \
+                     - (grid[x-1][y] - 2*grid[x][y] + grid[x+1][y]) / pow(cellLength,2) \
+                     - (grid[x][y-1] - 2*grid[x][y] + grid[x][y+1]) / pow(cellLength,2);
+    }
+  }
+
+  return;
+}
 
