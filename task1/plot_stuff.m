@@ -12,6 +12,7 @@ nPoints = length(data);
 
 surf([0:nPoints-1],[0:nPoints-1],data)
 shading faceted
+view(45,0)
 
 %% times
 
