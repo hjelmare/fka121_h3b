@@ -1,9 +1,79 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
+#include "mg_func.h"
 #define PI 3.141592653589
+#define COARSESTPOINTS 11
 
-double GaussSeidel(int nPoints, double cellLength, double grid[nPoints][nPoints], double rho[nPoints][nPoints]) {
+void Multigrid(int nPoints, double cellLength, double** grid, double** source)
+{
+  int i,j,k,x,y;
+  int gamma = 1;
+  int nPresmooth = 2, nPostsmooth = 2;
+  int nCoarsePoints = nPoints/2+1;
+  double** residual;
+  double** coarseResidual;
+  double** v;
+  double** fineV;
+  double tolerance = 0.00001;
+  double maxDiff = 2*tolerance;
+
+  residual = (double**) malloc(nPoints * sizeof(double*));
+  fineV = (double**) malloc(nPoints * sizeof(double*));
+  coarseResidual = (double**) malloc(nCoarsePoints * sizeof(double*));
+  v = (double**) malloc(nCoarsePoints * sizeof(double*));
+
+  for (i = 0 ; i < nPoints ; i++ ) {
+    residual[i] = (double*) calloc(nPoints, sizeof(double));
+    fineV[i] = (double*) calloc(nPoints, sizeof(double));
+  }
+  for ( i = 0 ; i < nCoarsePoints ; i++ ) {
+    coarseResidual[i] = (double*) calloc(nCoarsePoints, sizeof(double));
+    v[i] = (double*) calloc(nCoarsePoints, sizeof(double));
+  }
+
+
+  if ( nPoints <= COARSESTPOINTS ) {
+    while (maxDiff > tolerance ) {
+      maxDiff = GaussSeidel(nPoints, cellLength, grid, source);
+    }
+  } else {
+    for( i = 0 ; i < nPresmooth ; i++ ) {
+      GaussSeidel( nPoints, cellLength, grid, source);
+    }
+
+    ComputeResidual(nPoints, cellLength, grid, source, residual);
+
+    DecreaseGridDensity(nPoints, residual, coarseResidual);
+
+    for ( i = 0 ; i < nCoarsePoints ; i++ ) {
+      for ( j = 0 ; j < nCoarsePoints ; j++ ) {
+        v[i][j] = 0;
+      }
+    }
+
+    for ( k = 0 ; k < gamma ; k++) {
+      Multigrid(nCoarsePoints, cellLength, v, coarseResidual);
+    }
+    printf("%d\n", nCoarsePoints);
+    IncreaseGridDensity(nCoarsePoints, v, fineV);
+
+    for ( x = 0 ; x < nPoints ; x++ ) {
+      for ( y =0 ; y < nPoints ; y++ ) {
+        grid[x][y] = grid[x][y] + fineV[x][y];
+      }
+    }
+
+    for ( i = 0 ; i < nPostsmooth ; i++ ) {
+      GaussSeidel( nPoints, cellLength, grid, source);
+    }
+  }
+
+  return; // grid is "returned" as an argument...
+}
+
+
+double GaussSeidel(int nPoints, double cellLength, double** grid, double** rho) {
   double maxDiff = 0;
   double oldValue, diff;
   int x,y;
@@ -20,15 +90,16 @@ double GaussSeidel(int nPoints, double cellLength, double grid[nPoints][nPoints]
   return(maxDiff);
 }
 
-void IncreaseGridDensity(int nPoints, double inGrid[nPoints][nPoints], double outGrid[2*nPoints-1][2*nPoints-1]) {
+void IncreaseGridDensity(int nPoints, double** inGrid, double** outGrid) {
   int x, y;
-
+  printf("%d\n", nPoints);
   // the exactly matching points
   for ( x = 0 ; x < nPoints ; x++ ) {
     for ( y = 0 ; y < nPoints ; y++ ) {
       outGrid[2*x][2*y] = inGrid[x][y];
     }
   }
+  printf("hej\n");
   // points with four nearest neighbours
   for ( x = 1 ; x < 2*nPoints-1 ; x += 2 ) {
     for ( y = 1 ; y < 2*nPoints-1 ; y += 2 ) {
@@ -50,11 +121,11 @@ void IncreaseGridDensity(int nPoints, double inGrid[nPoints][nPoints], double ou
   return;
 }
 
-void DecreaseGridDensity(int nPoints, double inGrid[nPoints][nPoints], double outGrid[nPoints/2+1][nPoints/2+1]) {
+void DecreaseGridDensity(int nPoints, double** inGrid, double** outGrid) {
   int x,y;
 
-  for ( x = 1 ; x < nPoints/2+1 ; x++ ) {
-    for ( y = 1 ; y < nPoints/2+1 ; y++ ) {
+  for ( x = 1 ; x < nPoints/2 ; x++ ) {
+    for ( y = 1 ; y < nPoints/2 ; y++ ) {
       outGrid[x][y] = 1.0/4.0 * inGrid[2*x][2*y] \
                     + 1.0/8.0 * (inGrid[2*x-1][2*y] + inGrid[2*x+1][2*y] + inGrid[2*x][2*y-1] + inGrid[2*x][2*y+1]) \
                     + 1.0/16.0 * (inGrid[2*x-1][2*y-1] + inGrid[2*x+1][2*y-1] + inGrid[2*x+1][2*y+1] + inGrid[2*x-1][2*y+1]);
@@ -64,8 +135,8 @@ void DecreaseGridDensity(int nPoints, double inGrid[nPoints][nPoints], double ou
   return;
 }
 
-void ComputeResidual(int nPoints, double cellLength, double grid[nPoints][nPoints], \
-                          double rho[nPoints][nPoints], double residual[nPoints][nPoints]) {
+void ComputeResidual(int nPoints, double cellLength, double** grid, \
+                          double** rho, double** residual) {
   double oldValue, diff;
   int x,y;
   double tolerance = 0.00001;

@@ -1,9 +1,10 @@
 #ifndef _fft_func_h
 #define _fft_func_h
 
-extern double GaussSeidel(int size, double cellLength, double grid[size][size], double rho[size][size]);
-extern double IncreaseGridDensity(int n, double in[n][n], double out[2*n-1][2*n-1]);
-extern double DecreaseGridDensity(int n, double in[n][n], double out[n/2+1][n/2+1]);
-extern void ComputeResidual(int n, double c, double grid[n][n], double rho[n][n], double res[n][n]);
+extern void Multigrid(int size, double cellLength, double** grid, double** source);
+extern double GaussSeidel(int size, double cellLength, double** grid, double** rho);
+extern void IncreaseGridDensity(int n, double** in, double** out);
+extern void DecreaseGridDensity(int n, double** in, double** out);
+extern void ComputeResidual(int n, double c, double** grid, double** rho, double** res);
 
 #endif

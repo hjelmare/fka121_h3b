@@ -1,6 +1,6 @@
 
 CC = gcc
-CFLAGS = -O3 
+CFLAGS = -O3 -g 
 LIBS = -lm -lgsl -lgslcblas
 
 
