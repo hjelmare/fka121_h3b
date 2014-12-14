@@ -5,7 +5,31 @@
 #define PI 3.141592653589
 #define COARSESTPOINTS 11
 
-void Multigrid(int nPoints, double totalLength, double** grid, double** source)
+void Allocate2Dsq(int size, double **array)
+{
+  int i;
+  array = (double**) malloc(size * sizeof(double));
+  for ( i = 0 ; i < size ; i++ ) {
+    array[i] = (double*) calloc(size, sizeof(double));
+  }
+
+  return;
+}
+
+void Free2DSq(int size, double **array)
+{
+  int i;
+  for ( i = 0 ; i < size ; i++) {
+    free(array[i]);
+    array[i] = NULL;
+  }
+  free(array);
+
+  return;
+}
+
+
+void Multigrid(int nPoints, double totalLength, double** grid, double** source, FILE *fLog)
 {
   int i,j,k,x,y;
   int gamma = 2;
@@ -37,6 +61,7 @@ void Multigrid(int nPoints, double totalLength, double** grid, double** source)
     while (maxDiff > tolerance ) {
       maxDiff = GaussSeidel(nPoints, totalLength, grid, source);
     }
+    fprintf(fLog, "%d\n",nPoints);
   } else {
     for( i = 0 ; i < nPresmooth ; i++ ) {
       GaussSeidel( nPoints, totalLength, grid, source);
@@ -51,9 +76,11 @@ void Multigrid(int nPoints, double totalLength, double** grid, double** source)
         v[i][j] = 0;
       }
     }
-
+    
+    fprintf(fLog,"%d\n", nPoints);
     for ( k = 0 ; k < gamma ; k++) {
-      Multigrid(nCoarsePoints, totalLength, v, coarseResidual);
+      Multigrid(nCoarsePoints, totalLength, v, coarseResidual, fLog);
+      fprintf(fLog,"%d\n", nPoints);
     }
     IncreaseGridDensity(nCoarsePoints, v, fineV);
 
