@@ -5,12 +5,13 @@
 #define PI 3.141592653589
 #define COARSESTPOINTS 11
 
-void Multigrid(int nPoints, double cellLength, double** grid, double** source)
+void Multigrid(int nPoints, double totalLength, double** grid, double** source)
 {
   int i,j,k,x,y;
   int gamma = 2;
-  int nPresmooth = 400, nPostsmooth = 4;
+  int nPresmooth = 2, nPostsmooth = 2;
   int nCoarsePoints = nPoints/2+1;
+  double cellLength = totalLength / (double) (nPoints-1);
   double** residual;
   double** coarseResidual;
   double** v;
@@ -34,14 +35,14 @@ void Multigrid(int nPoints, double cellLength, double** grid, double** source)
 
   if ( nPoints <= COARSESTPOINTS ) {
     while (maxDiff > tolerance ) {
-      maxDiff = GaussSeidel(nPoints, cellLength, grid, source);
+      maxDiff = GaussSeidel(nPoints, totalLength, grid, source);
     }
   } else {
     for( i = 0 ; i < nPresmooth ; i++ ) {
-      GaussSeidel( nPoints, cellLength, grid, source);
+      GaussSeidel( nPoints, totalLength, grid, source);
     }
 
-    ComputeResidual(nPoints, cellLength, grid, source, residual);
+    ComputeResidual(nPoints, totalLength, grid, source, residual);
 
     DecreaseGridDensity(nPoints, residual, coarseResidual);
 
@@ -52,7 +53,7 @@ void Multigrid(int nPoints, double cellLength, double** grid, double** source)
     }
 
     for ( k = 0 ; k < gamma ; k++) {
-      Multigrid(nCoarsePoints, cellLength/2.0, v, coarseResidual);
+      Multigrid(nCoarsePoints, totalLength, v, coarseResidual);
     }
     IncreaseGridDensity(nCoarsePoints, v, fineV);
 
@@ -63,7 +64,7 @@ void Multigrid(int nPoints, double cellLength, double** grid, double** source)
     }
 
     for ( i = 0 ; i < nPostsmooth ; i++ ) {
-      GaussSeidel( nPoints, cellLength, grid, source);
+      GaussSeidel( nPoints, totalLength, grid, source);
     }
   }
 
@@ -80,8 +81,9 @@ void Multigrid(int nPoints, double cellLength, double** grid, double** source)
 }
 
 
-double GaussSeidel(int nPoints, double cellLength, double** grid, double** rho) {
+double GaussSeidel(int nPoints, double totalLength, double** grid, double** rho) {
   double maxDiff = 0;
+  double cellLength = totalLength/ (double) (nPoints-1);
   double oldValue, diff;
   int x,y;
 
@@ -140,10 +142,11 @@ void DecreaseGridDensity(int nPoints, double** inGrid, double** outGrid) {
   return;
 }
 
-void ComputeResidual(int nPoints, double cellLength, double** grid, \
+void ComputeResidual(int nPoints, double totalLength, double** grid, \
                           double** rho, double** residual) {
   double oldValue, diff;
   int x,y;
+  double cellLength = totalLength / (double) (nPoints-1);
   double tolerance = 0.00001;
   double maxDiff = 2*tolerance;
 

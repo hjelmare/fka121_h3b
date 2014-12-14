@@ -7,7 +7,7 @@
 int main() {
   clock_t end, start = clock();
 
-  int nPoints = 21;
+  int nPoints = 1281;
 
   double chargeSeparation = 0.2;
   double totalLength = 1;
@@ -31,7 +31,7 @@ int main() {
   rho[nPoints / 2 - chargeOffset][nPoints / 2 ] = -1.0 / pow(cellLength,2);
   // End of init part
 
-  Multigrid(nPoints, cellLength, grid, rho);
+  Multigrid(nPoints, totalLength, grid, rho);
 
   FILE *fGrid = fopen("grid.data","w");
 
