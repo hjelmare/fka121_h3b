@@ -16,7 +16,7 @@ void Allocate2Dsq(int size, double **array)
   return;
 }
 
-void FreeMem2DSq(int size, double **array)
+void Free2DSq(int size, double **array)
 {
   int i;
   for ( i = 0 ; i < size ; i++) {
