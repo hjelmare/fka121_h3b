@@ -7,7 +7,7 @@
 int main() {
   clock_t end, start = clock();
 
-  int nPoints = 401;
+  int nPoints = 21;
 
   double chargeSeparation = 0.2;
   double totalLength = 1;
@@ -35,13 +35,16 @@ int main() {
 
   FILE *fGrid = fopen("grid.data","w");
 
+
   int nPlotPoints = nPoints;
 //  nPlotPoints = nCoarsePoints;
   for ( x = 0 ; x < nPlotPoints ; x++ ) {
     for (  y = 0 ; y < nPlotPoints ; y++ ) {
       fprintf(fGrid,"%e\t",grid[x][y]);
+
     }
     fprintf(fGrid,"\n");
+
   }
 
   end = clock();    // we're not really interested in the time to save the data

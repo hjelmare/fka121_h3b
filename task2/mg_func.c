@@ -55,7 +55,7 @@ void Multigrid(int nPoints, double cellLength, double** grid, double** source)
     for ( k = 0 ; k < gamma ; k++) {
       Multigrid(nCoarsePoints, cellLength, v, coarseResidual);
     }
-    printf("%d\n", nCoarsePoints);
+
     IncreaseGridDensity(nCoarsePoints, v, fineV);
 
     for ( x = 0 ; x < nPoints ; x++ ) {
@@ -92,14 +92,12 @@ double GaussSeidel(int nPoints, double cellLength, double** grid, double** rho) 
 
 void IncreaseGridDensity(int nPoints, double** inGrid, double** outGrid) {
   int x, y;
-  printf("%d\n", nPoints);
   // the exactly matching points
   for ( x = 0 ; x < nPoints ; x++ ) {
     for ( y = 0 ; y < nPoints ; y++ ) {
       outGrid[2*x][2*y] = inGrid[x][y];
     }
   }
-  printf("hej\n");
   // points with four nearest neighbours
   for ( x = 1 ; x < 2*nPoints-1 ; x += 2 ) {
     for ( y = 1 ; y < 2*nPoints-1 ; y += 2 ) {
