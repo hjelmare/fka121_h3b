@@ -12,7 +12,7 @@ int main() {
   double chargeSeparation = 0.2;
   double totalLength = 1;
   double cellLength = totalLength / (nPoints - 1);
-  int chargeOffset = chargeSeparation / 2 * (nPoints - 1)/totalLength;
+  int chargeOffset = chargeSeparation / 2 / cellLength;
 
   double **grid;
   double **rho;
