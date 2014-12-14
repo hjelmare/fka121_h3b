@@ -8,7 +8,7 @@ int main() {
   clock_t end, start = clock();
 
   int nPoints = 81;
-  int coarsestGrid = 11;
+  int nCoarsestPoints = 11;
 
   double chargeSeparation = 0.2;
   double totalLength = 1;
@@ -42,30 +42,27 @@ int main() {
   nbrOfMultigridCallings = i;
 
   i=0;
-  while( (coarsestGrid-1)*pow(2,i) < nPoints){
+  nPoints = COARSESTGRID * pow(2,i);
+  while( nPoints < nMaxPoints){
+    // Calculates Rho at a finer grid
+    cellLength = totalLength / (nPoints - 1);
+    chargeOffset = chargeSeparation / 2 / cellLength;
+  
+    Free2DSq(nPoints, grid);  
+    Free2DSq(nPoints, rho);  
+    
+    grid = (double**) malloc(nPoints * sizeof(double*));
+    rho = (double**) malloc(nPoints * sizeof(double*));
 
+    // Initializing
+    for ( x = 0 ; x < nPoints ; x++ ) {
+      grid[x] = (double*) calloc(nPoints, sizeof(double));
+      rho[x] = (double*) calloc(nPoints, sizeof(double));
+    }
   
-  
-  // Calculates Rho at a finer grid
-  cellLength = totalLength / (coarsestGrid*pow(2,i) - 1);
-  chargeOffset = chargeSeparation / 2 * (coarsestGrid*pow(2,i) - 1)/totalLength;
-  
-  Free2DSq(coarsestGrid*pow(2,i), grid);  
-  Free2DSq(coarsestGrid*pow(2,i), rho);  
-  double **grid;
-  double **rho;
-  grid = (double**) malloc(nPoints * sizeof(double*));
-  rho = (double**) malloc(nPoints * sizeof(double*));
-
-  // Initializing
-  for ( x = 0 ; x < nPoints ; x++ ) {
-    grid[x] = (double*) calloc(nPoints, sizeof(double));
-    rho[x] = (double*) calloc(nPoints, sizeof(double));
-  }
-  
-  rho[nPoints / 2 + chargeOffset][nPoints / 2 ] = 1.0 / pow(cellLength,2);
-  rho[nPoints / 2 - chargeOffset][nPoints / 2 ] = -1.0 / pow(cellLength,2);
-  // end Calculate Rho
+    rho[nPoints / 2 + chargeOffset][nPoints / 2 ] = 1.0 / pow(cellLength,2);
+    rho[nPoints / 2 - chargeOffset][nPoints / 2 ] = -1.0 / pow(cellLength,2);
+    // end Calculate Rho
   
   }
 
