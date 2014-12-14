@@ -7,7 +7,7 @@
 int main() {
   clock_t end, start = clock();
 
-  int nPoints = 1281;
+  int nPoints = 641;
 
   double chargeSeparation = 0.2;
   double totalLength = 1;
@@ -27,11 +27,15 @@ int main() {
     rho[x] = (double*) calloc(nPoints, sizeof(double));
   }
   
-  rho[nPoints / 2 + chargeOffset][nPoints / 2 ] = 1.0 / pow(cellLength,2);
-  rho[nPoints / 2 - chargeOffset][nPoints / 2 ] = -1.0 / pow(cellLength,2);
+  rho[nPoints / 2 + chargeOffset][nPoints / 2 ] = -1.0 / pow(cellLength,2);
+  rho[nPoints / 2 - chargeOffset][nPoints / 2 ] = 1.0 / pow(cellLength,2);
   // End of init part
+  
+  FILE *fLog = fopen("log.data","w");
+  
+  Multigrid(nPoints, totalLength, grid, rho, fLog);
 
-  Multigrid(nPoints, totalLength, grid, rho);
+  fclose(fLog);
 
   FILE *fGrid = fopen("grid.data","w");
 
