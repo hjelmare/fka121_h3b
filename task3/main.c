@@ -17,36 +17,28 @@ int main() {
 
   double **grid;
   double **rho;
-  grid = (double**) malloc(coarsestGrid * sizeof(double*));
-  rho = (double**) malloc(coarsestGrid * sizeof(double*));
   
   int x, y, i;
 
-  // Initializing
-  for ( x = 0 ; x < nPoints ; x++ ) {
-    grid[x] = (double*) calloc(nPoints, sizeof(double));
-    rho[x] = (double*) calloc(nPoints, sizeof(double));
-  }
-  
-  rho[nPoints / 2 + chargeOffset][nPoints / 2 ] = 1.0 / pow(cellLength,2);
-  rho[nPoints / 2 - chargeOffset][nPoints / 2 ] = -1.0 / pow(cellLength,2);
-  // End of init part
+  // initiera grid och rho på grövsta gridsize
 
-//  Multigrid(nPoints, totalLength, grid, rho);
+//  Multigrid(nPoints, totalLength, grid, rho, fLog);
 
 // NYTT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  i = 0;
-  while((nPoints-1)/(2*i) > 11){
-    i+=i;
-  }
-  nbrOfMultigridCallings = i;
 
   i=0;
-  nPoints = COARSESTGRID * pow(2,i);
+  nPoints = nCoarsestPoints * pow(2,i);
   while( nPoints < nMaxPoints){
-    // Calculates Rho at a finer grid
+    // här ska följande hända:
+    // kör multigrid
+    // interpolera upp grid
+    // uppdatera nPoints och alla parametrar som hänger på den (cellLength och chargeOffset t.ex... fler?)
+    // freea rho
+    // skapa ny rho
+    // var det allt?
+
     cellLength = totalLength / (nPoints - 1);
-    chargeOffset = chargeSeparation / 2 / cellLength;
+    chargeOffset = (chargeSeparation / 2) / cellLength;
   
     Free2DSq(nPoints, grid);  
     Free2DSq(nPoints, rho);  
@@ -69,8 +61,6 @@ int main() {
 // SLUT NYTT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   FILE *fGrid = fopen("grid.data","w");
-
-
   int nPlotPoints = nPoints;
   for ( x = 0 ; x < nPlotPoints ; x++ ) {
     for (  y = 0 ; y < nPlotPoints ; y++ ) {
