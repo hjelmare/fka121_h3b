@@ -33,7 +33,7 @@ void Free2dSq(int size, double **array)
 void Multigrid(int nPoints, double totalLength, double** grid, double** source, FILE *fLog)
 {
   int i,j,k,x,y;
-  int gamma = 2;
+  int gamma = 1;
   int nPresmooth = 2, nPostsmooth = 2;
   int nCoarsePoints = nPoints/2+1;
   double cellLength = totalLength / (double) (nPoints-1);
@@ -95,15 +95,6 @@ void Multigrid(int nPoints, double totalLength, double** grid, double** source, 
       GaussSeidel( nPoints, totalLength, grid, source);
     }
   }
-
-  FILE *fV = fopen("res.data","w");
-  for ( i = 0 ; i < nPoints ; i++ ) {
-    for ( j = 0 ; j < nPoints ; j++ ) {
-      fprintf(fV, "%e\t",fineV[i][j]);
-    }
-    fprintf(fV,"\n");
-  }
-  fclose(fV);
 
   return; // grid is "returned" as an argument...
 }
