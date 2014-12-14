@@ -96,15 +96,6 @@ void Multigrid(int nPoints, double totalLength, double** grid, double** source, 
     }
   }
 
-  FILE *fV = fopen("res.data","w");
-  for ( i = 0 ; i < nPoints ; i++ ) {
-    for ( j = 0 ; j < nPoints ; j++ ) {
-      fprintf(fV, "%e\t",fineV[i][j]);
-    }
-    fprintf(fV,"\n");
-  }
-  fclose(fV);
-
   return; // grid is "returned" as an argument...
 }
 
