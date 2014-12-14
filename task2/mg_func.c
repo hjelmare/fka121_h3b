@@ -8,8 +8,8 @@
 void Multigrid(int nPoints, double cellLength, double** grid, double** source)
 {
   int i,j,k,x,y;
-  int gamma = 1;
-  int nPresmooth = 2, nPostsmooth = 2;
+  int gamma = 2;
+  int nPresmooth = 4, nPostsmooth = 4;
   int nCoarsePoints = nPoints/2+1;
   double** residual;
   double** coarseResidual;
@@ -32,7 +32,6 @@ void Multigrid(int nPoints, double cellLength, double** grid, double** source)
     v[i] = (double*) calloc(nCoarsePoints, sizeof(double));
   }
 
-
   if ( nPoints <= COARSESTPOINTS ) {
     while (maxDiff > tolerance ) {
       maxDiff = GaussSeidel(nPoints, cellLength, grid, source);
@@ -53,9 +52,8 @@ void Multigrid(int nPoints, double cellLength, double** grid, double** source)
     }
 
     for ( k = 0 ; k < gamma ; k++) {
-      Multigrid(nCoarsePoints, cellLength, v, coarseResidual);
+      Multigrid(nCoarsePoints, cellLength/2.0, v, coarseResidual);
     }
-
     IncreaseGridDensity(nCoarsePoints, v, fineV);
 
     for ( x = 0 ; x < nPoints ; x++ ) {
@@ -68,6 +66,15 @@ void Multigrid(int nPoints, double cellLength, double** grid, double** source)
       GaussSeidel( nPoints, cellLength, grid, source);
     }
   }
+
+  FILE *fV = fopen("res.data","w");
+  for ( i = 0 ; i < nPoints ; i++ ) {
+    for ( j = 0 ; j < nPoints ; j++ ) {
+      fprintf(fV, "%e\t",fineV[i][j]);
+    }
+    fprintf(fV,"\n");
+  }
+  fclose(fV);
 
   return; // grid is "returned" as an argument...
 }

@@ -7,8 +7,8 @@
 int main() {
   clock_t end, start = clock();
 
-  int nCoarsePoints = 11;
-  int nFinePoints = 21; // must be N = 2*(n-1)+1
+  int nCoarsePoints = 161;
+  int nFinePoints = 2*(nCoarsePoints - 1) +1; // must be N = 2*(n-1)+1
 
   double chargeSeparation = 0.2;
   double totalLength = 1;
@@ -29,9 +29,9 @@ int main() {
   double diff;
   int nPresmooth = 2;
   int nPostsmooth = 2;
-  double innerTolerance = 0.00001;
+  double innerTolerance = 5;
   double innerMaxDiff = 2*innerTolerance;  // just some high number
-  double outerTolerance = 0.00001;
+  double outerTolerance = 5;
   double outerMaxDiff = 2*outerTolerance;
 
   // Initializing

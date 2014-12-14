@@ -4,7 +4,8 @@ clear all
 clc
 clf
 
-data = dlmread('grid.data','\t');
+%data = dlmread('grid.data','\t');
+data = dlmread('res.data','\t');
 
 data = data(:,1:end-1);
 
@@ -12,6 +13,7 @@ nPoints = length(data);
 
 surf([0:nPoints-1],[0:nPoints-1],data)
 shading flat
+view(45,0)
 
 %% times
 

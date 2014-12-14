@@ -26,7 +26,7 @@ int main() {
     grid[x] = (double*) calloc(nPoints, sizeof(double));
     rho[x] = (double*) calloc(nPoints, sizeof(double));
   }
-
+  
   rho[nPoints / 2 + chargeOffset][nPoints / 2 ] = 1.0 / pow(cellLength,2);
   rho[nPoints / 2 - chargeOffset][nPoints / 2 ] = -1.0 / pow(cellLength,2);
   // End of init part
@@ -37,7 +37,6 @@ int main() {
 
 
   int nPlotPoints = nPoints;
-//  nPlotPoints = nCoarsePoints;
   for ( x = 0 ; x < nPlotPoints ; x++ ) {
     for (  y = 0 ; y < nPlotPoints ; y++ ) {
       fprintf(fGrid,"%e\t",grid[x][y]);
@@ -47,7 +46,7 @@ int main() {
 
   }
 
-  end = clock();    // we're not really interested in the time to save the data
+  end = clock();
 
   printf("Done! (%e s)\n",((double)(end-start) / CLOCKS_PER_SEC));
 
