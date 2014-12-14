@@ -9,16 +9,16 @@ int main() {
 
   int nMaxPoints = 81;
   int nCoarsestPoints = 11;
-  int nCoarcePoints, nFinePoints;
+  int nCoarsePoints, nFinePoints;
   int nPoints;
 
   double chargeSeparation = 0.2;
   double totalLength = 1;
-  double cellLength = totalLength / (coarsestGrid - 1);
-  int chargeOffset = chargeSeparation / 2 * (coarsestGrid - 1)/totalLength;
+  double cellLength = totalLength / (nCoarsestPoints - 1);
+  int chargeOffset = chargeSeparation / 2 * (nCoarsestPoints - 1)/totalLength;
 
-  double **grid;
-  double **rho;
+  double** grid;
+  double** rho;
   
   int x, y, i;
 
@@ -27,20 +27,22 @@ int main() {
   i=0;
   nPoints = nCoarsestPoints * pow(2,i);
   // initiera grid och rho på grövsta gridsize
-  for ( x = 0 ; x < nPoints ; x++ ) {
-    grid[x] = (double*) calloc(nPoints, sizeof(double));
-    rho[x] = (double*) calloc(nPoints, sizeof(double));
-  }
+printf("%d\n", nPoints);
+  Allocate2Dsq(nPoints, grid);
+  Allocate2Dsq(nPoints, rho);
+  
+  printf("%e", nPoints);
   rho[nPoints / 2 + chargeOffset][nPoints / 2 ] = 1.0 / pow(cellLength,2);
   rho[nPoints / 2 - chargeOffset][nPoints / 2 ] = -1.0 / pow(cellLength,2);
 
-  Multigrid(coarsestGrid, totalLength, grid, rho, fLog);
+  //Kör den första multigriden
+//  Multigrid(nCoarsestPoints, totalLength, grid, rho, logFile);
 
 // NYTT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+/*
   while( nPoints < nMaxPoints){
     i++;
-    nCourseGridPoints = nCoarsestPoints*pow(2,i-1);
+    nCoarsePoints = nCoarsestPoints*pow(2,i-1);
     nFinePoints = nCoarsestPoints*pow(2,i);
     // här ska följande hända:
     // kör multigrid
@@ -51,42 +53,43 @@ int main() {
     // var det allt?
     
     //skapa minnes plats, används längre ner
-    fineGrid = (double**) malloc(nFinePoints * sizeof(double*));
-    for ( x = 0 ; x < finerGridPoints ; x++ ) {
-      finerGrid[x] = (double*) calloc(nFinePoints, sizeof(double));
-    }
+    double** fineGrid;
+    Allocate2Dsq(nFinePoints, fineGrid);
 
     // Gör om till finare grid
     IncreaseGridDensity(nCoarsePoints, grid, fineGrid);
-    
-    //Kör multigrid
-    Multigrid(nPoints, totalLength, fineGrid, rho, logFile);
-    
 
-    cellLength = totalLength / (nPoints - 1);
-    chargeOffset = (chargeSeparation / 2) / cellLength;
-  
-    Free2DSq(nPoints, grid);  
-    Free2DSq(nPoints, rho);  
-    
-    grid = (double**) malloc(nPoints * sizeof(double*));
-    rho = (double**) malloc(nPoints * sizeof(double*));
-
-    // Initializing
-    for ( x = 0 ; x < nPoints ; x++ ) {
-      grid[x] = (double*) calloc(nPoints, sizeof(double));
-      rho[x] = (double*) calloc(nPoints, sizeof(double));
-    }
-  
+    //Uppdatera rho & grid
+    Free2DSq(nCoarsePoints, rho); //free memory space 
+    Free2DSq(nCoarsePoints, grid);  
+    double** grid;
+    double** rho;
+    Allocate2Dsq(nFinePoints, grid);
+    Allocate2Dsq(nFinePoints, rho);
     rho[nPoints / 2 + chargeOffset][nPoints / 2 ] = 1.0 / pow(cellLength,2);
     rho[nPoints / 2 - chargeOffset][nPoints / 2 ] = -1.0 / pow(cellLength,2);
-    // end Calculate Rho
+    
+    for(x=0; x<nFinePoints; x++){
+      for(y=0; y<nFinePoints; y++){
+        grid[x][y] = fineGrid[x][y];
+      }
+    }
+    
+    //Kör multigrid
+    Multigrid(nFinePoints, totalLength, grid, rho, logFile);
+    
+
+    cellLength = totalLength / (nFinePoints - 1);
+    chargeOffset = (chargeSeparation / 2) / cellLength;
+  
+printf("nPoints:\t nCource = %e\t nFine =%e\n", nCoarsePoints, nFinePoints);  
+  
   }
 
 // SLUT NYTT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   FILE *fGrid = fopen("grid.data","w");
-  int nPlotPoints = nPoints;
+  int nPlotPoints = nMaxPoints;
   for ( x = 0 ; x < nPlotPoints ; x++ ) {
     for (  y = 0 ; y < nPlotPoints ; y++ ) {
       fprintf(fGrid,"%e\t",grid[x][y]);
@@ -97,7 +100,7 @@ int main() {
   }
 
   end = clock();
-
+*/
   printf("Done! (%e s)\n",((double)(end-start) / CLOCKS_PER_SEC));
 
   return 0;
