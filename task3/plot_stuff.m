@@ -5,15 +5,38 @@ clc
 clf
 
 data = dlmread('grid.data','\t');
-%data = dlmread('res.data','\t');
-
 data = data(:,1:end-1);
+data = data(:,fix(end/2)+1);
+
+xData = linspace(0,1,length(data));
+
+exactData = dlmread('../phi_exact.data','\t');
+xExactData = linspace(0,1,length(exactData));
+
+plot(xExactData,exactData,'r')
+hold on
+plot(xData,data,'b')
+hold off
+
+
+%%
 
 nPoints = length(data);
 
 surf([0:nPoints-1],[0:nPoints-1],data)
 shading flat
 view(45,0)
+
+%% depth
+
+clear all
+clc
+clf
+
+data = dlmread('log.data','\t');
+
+semilogy(data,'x-')
+
 
 %% times
 

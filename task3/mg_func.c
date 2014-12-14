@@ -33,7 +33,7 @@ void Free2dSq(int size, double **array)
 void Multigrid(int nPoints, double totalLength, double** grid, double** source, FILE *fLog)
 {
   int i,j,k,x,y;
-  int gamma = 2;
+  int gamma = 1;
   int nPresmooth = 2, nPostsmooth = 2;
   int nCoarsePoints = nPoints/2+1;
   double cellLength = totalLength / (double) (nPoints-1);

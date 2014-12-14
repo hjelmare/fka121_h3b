@@ -35,7 +35,7 @@ clf
 
 data = dlmread('log.data','\t');
 
-semilogy(data)
+semilogy(data,'x-')
 
 
 %% times

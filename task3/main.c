@@ -28,8 +28,8 @@ int main() {
   Allocate2dSq(nPoints, &grid);
   Allocate2dSq(nPoints, &rho);
   
-  rho[nPoints / 2 + chargeOffset][nPoints / 2 ] = 1.0 / pow(cellLength,2);
-  rho[nPoints / 2 - chargeOffset][nPoints / 2 ] = -1.0 / pow(cellLength,2);
+  rho[nPoints / 2 + chargeOffset][nPoints / 2 ] = -1.0 / pow(cellLength,2);
+  rho[nPoints / 2 - chargeOffset][nPoints / 2 ] = 1.0 / pow(cellLength,2);
 
   while( nPoints < nMaxPoints){
     // här ska följande hända:
@@ -50,8 +50,8 @@ int main() {
     chargeOffset = chargeSeparation / 2 / cellLength;
     // skapa ny rho
     Allocate2dSq(nPoints, &rho);
-    rho[nPoints / 2 + chargeOffset][nPoints / 2 ] = 1.0 / pow(cellLength,2);
-    rho[nPoints / 2 - chargeOffset][nPoints / 2 ] = -1.0 / pow(cellLength,2);
+    rho[nPoints / 2 + chargeOffset][nPoints / 2 ] = -1.0 / pow(cellLength,2);
+    rho[nPoints / 2 - chargeOffset][nPoints / 2 ] = 1.0 / pow(cellLength,2);
     // var det allt?
   }
 
