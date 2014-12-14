@@ -29,9 +29,9 @@ int main() {
   double diff;
   int nPresmooth = 2;
   int nPostsmooth = 2;
-  double innerTolerance = 5;
+  double innerTolerance = 0.00001;
   double innerMaxDiff = 2*innerTolerance;  // just some high number
-  double outerTolerance = 5;
+  double outerTolerance = 0.00001;
   double outerMaxDiff = 2*outerTolerance;
 
   // Initializing

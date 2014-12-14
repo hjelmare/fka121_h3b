@@ -9,7 +9,7 @@ void Multigrid(int nPoints, double cellLength, double** grid, double** source)
 {
   int i,j,k,x,y;
   int gamma = 2;
-  int nPresmooth = 4, nPostsmooth = 4;
+  int nPresmooth = 400, nPostsmooth = 4;
   int nCoarsePoints = nPoints/2+1;
   double** residual;
   double** coarseResidual;

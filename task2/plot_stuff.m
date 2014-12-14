@@ -4,8 +4,8 @@ clear all
 clc
 clf
 
-%data = dlmread('grid.data','\t');
-data = dlmread('res.data','\t');
+data = dlmread('grid.data','\t');
+%data = dlmread('res.data','\t');
 
 data = data(:,1:end-1);
 
