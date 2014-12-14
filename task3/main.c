@@ -7,8 +7,10 @@
 int main() {
   clock_t end, start = clock();
 
-  int nPoints = 81;
+  int nMaxPoints = 81;
   int nCoarsestPoints = 11;
+  int nCoarcePoints, nFinePoints;
+  int nPoints;
 
   double chargeSeparation = 0.2;
   double totalLength = 1;
@@ -20,15 +22,26 @@ int main() {
   
   int x, y, i;
 
-  // initiera grid och rho på grövsta gridsize
-
-//  Multigrid(nPoints, totalLength, grid, rho, fLog);
-
-// NYTT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  FILE *logFile = fopen("log.data","w");
 
   i=0;
   nPoints = nCoarsestPoints * pow(2,i);
+  // initiera grid och rho på grövsta gridsize
+  for ( x = 0 ; x < nPoints ; x++ ) {
+    grid[x] = (double*) calloc(nPoints, sizeof(double));
+    rho[x] = (double*) calloc(nPoints, sizeof(double));
+  }
+  rho[nPoints / 2 + chargeOffset][nPoints / 2 ] = 1.0 / pow(cellLength,2);
+  rho[nPoints / 2 - chargeOffset][nPoints / 2 ] = -1.0 / pow(cellLength,2);
+
+  Multigrid(coarsestGrid, totalLength, grid, rho, fLog);
+
+// NYTT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
   while( nPoints < nMaxPoints){
+    i++;
+    nCourseGridPoints = nCoarsestPoints*pow(2,i-1);
+    nFinePoints = nCoarsestPoints*pow(2,i);
     // här ska följande hända:
     // kör multigrid
     // interpolera upp grid
@@ -36,6 +49,19 @@ int main() {
     // freea rho
     // skapa ny rho
     // var det allt?
+    
+    //skapa minnes plats, används längre ner
+    fineGrid = (double**) malloc(nFinePoints * sizeof(double*));
+    for ( x = 0 ; x < finerGridPoints ; x++ ) {
+      finerGrid[x] = (double*) calloc(nFinePoints, sizeof(double));
+    }
+
+    // Gör om till finare grid
+    IncreaseGridDensity(nCoarsePoints, grid, fineGrid);
+    
+    //Kör multigrid
+    Multigrid(nPoints, totalLength, fineGrid, rho, logFile);
+    
 
     cellLength = totalLength / (nPoints - 1);
     chargeOffset = (chargeSeparation / 2) / cellLength;
@@ -55,7 +81,6 @@ int main() {
     rho[nPoints / 2 + chargeOffset][nPoints / 2 ] = 1.0 / pow(cellLength,2);
     rho[nPoints / 2 - chargeOffset][nPoints / 2 ] = -1.0 / pow(cellLength,2);
     // end Calculate Rho
-  
   }
 
 // SLUT NYTT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
