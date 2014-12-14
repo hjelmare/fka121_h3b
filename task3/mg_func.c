@@ -5,18 +5,18 @@
 #define PI 3.141592653589
 #define COARSESTPOINTS 11
 
-void Allocate2Dsq(int size, double **array)
+void Allocate2dSq(int size, double ***array)
 {
   int i;
-  array = (double**) malloc(size * sizeof(double));
+  *array = (double**) malloc(size * sizeof(double));
   for ( i = 0 ; i < size ; i++ ) {
-    array[i] = (double*) calloc(size, sizeof(double));
+    (*array)[i] = (double*) calloc(size, sizeof(double));
   }
-
+  
   return;
 }
 
-void Free2DSq(int size, double **array)
+void Free2dSq(int size, double **array)
 {
   int i;
   for ( i = 0 ; i < size ; i++) {
@@ -24,6 +24,7 @@ void Free2DSq(int size, double **array)
     array[i] = NULL;
   }
   free(array);
+  array = NULL;
 
   return;
 }
