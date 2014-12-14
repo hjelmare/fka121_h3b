@@ -50,7 +50,8 @@ int main() {
   cellLength = totalLength / (coarsestGrid*pow(2,i) - 1);
   chargeOffset = chargeSeparation / 2 * (coarsestGrid*pow(2,i) - 1)/totalLength;
   
-  
+  Free2DSq(coarsestGrid*pow(2,i), grid);  
+  Free2DSq(coarsestGrid*pow(2,i), rho);  
   double **grid;
   double **rho;
   grid = (double**) malloc(nPoints * sizeof(double*));
