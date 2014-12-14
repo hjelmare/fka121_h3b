@@ -51,8 +51,8 @@ int main() {
     }
   }
 
-  fineRho[nFinePoints / 2 + fineChargeOffset][nFinePoints / 2 ] = 1.0 / pow(fineCellLength,2);
-  fineRho[nFinePoints / 2 - fineChargeOffset][nFinePoints / 2 ] = -1.0 / pow(fineCellLength,2);
+  fineRho[nFinePoints / 2 + fineChargeOffset][nFinePoints / 2 ] = -1.0 / pow(fineCellLength,2);
+  fineRho[nFinePoints / 2 - fineChargeOffset][nFinePoints / 2 ] = 1.0 / pow(fineCellLength,2);
   // End of init part
 
   while( outerMaxDiff > outerTolerance) {

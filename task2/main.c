@@ -7,7 +7,9 @@
 int main() {
   clock_t end, start = clock();
 
-  int nPoints = 641;
+  int nPoints = 81;
+  FILE *fGrid = fopen("grid81w.data","w");
+  int gamma = 2;
 
   double chargeSeparation = 0.2;
   double totalLength = 1;
@@ -33,11 +35,10 @@ int main() {
   
   FILE *fLog = fopen("log.data","w");
   
-  Multigrid(nPoints, totalLength, grid, rho, fLog);
+  Multigrid(gamma, nPoints, totalLength, grid, rho, fLog);
 
   fclose(fLog);
 
-  FILE *fGrid = fopen("grid.data","w");
 
 
   int nPlotPoints = nPoints;
