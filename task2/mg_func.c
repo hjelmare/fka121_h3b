@@ -54,7 +54,6 @@ void Multigrid(int nPoints, double cellLength, double** grid, double** source)
     for ( k = 0 ; k < gamma ; k++) {
       Multigrid(nCoarsePoints, cellLength/2.0, v, coarseResidual);
     }
-    
     IncreaseGridDensity(nCoarsePoints, v, fineV);
 
     for ( x = 0 ; x < nPoints ; x++ ) {

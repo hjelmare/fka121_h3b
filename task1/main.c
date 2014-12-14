@@ -25,7 +25,7 @@ int main() {
   double coarseError[nCoarsePoints][nCoarsePoints];
   double fineError[nFinePoints][nFinePoints];
   
-  int x, y, i;
+  int x, y, i, z,j;
   double diff;
   int nPresmooth = 2;
   int nPostsmooth = 2;
@@ -56,6 +56,7 @@ int main() {
   // End of init part
 
   while( outerMaxDiff > outerTolerance) {
+
     for( x = 0 ; x < nFinePoints ; x++ ) {
       for( y = 0 ; y < nFinePoints ; y++ ) {
         oldFineGrid[x][y] = fineGrid[x][y];
