@@ -7,7 +7,7 @@
 int main() {
   clock_t end, start = clock();
 
-  int nPoints = 321;
+  int nPoints = 641;
 
   double chargeSeparation = 0.2;
   double totalLength = 1;
