@@ -60,6 +60,7 @@ ylabel('Number of points','FontSize',textStorlek)
 h = legend('Number of grid points');
 set(h,'FontSize',legendStorlek);
 
+
 saveas(gcf,'task3_depth.png','png')
 
 %% times - not used right now

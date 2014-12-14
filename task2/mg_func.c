@@ -29,10 +29,9 @@ void Free2DSq(int size, double **array)
 }
 
 
-void Multigrid(int nPoints, double totalLength, double** grid, double** source, FILE *fLog)
+void Multigrid(int nPoints, int gamma, double totalLength, double** grid, double** source, FILE *fLog)
 {
   int i,j,k,x,y;
-  int gamma = 2;
   int nPresmooth = 2, nPostsmooth = 2;
   int nCoarsePoints = nPoints/2+1;
   double cellLength = totalLength / (double) (nPoints-1);
@@ -79,7 +78,7 @@ void Multigrid(int nPoints, double totalLength, double** grid, double** source, 
     
     fprintf(fLog,"%d\n", nPoints);
     for ( k = 0 ; k < gamma ; k++) {
-      Multigrid(nCoarsePoints, totalLength, v, coarseResidual, fLog);
+      Multigrid(nCoarsePoints, gamma, totalLength, v, coarseResidual, fLog);
       fprintf(fLog,"%d\n", nPoints);
     }
     IncreaseGridDensity(nCoarsePoints, v, fineV);
