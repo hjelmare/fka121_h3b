@@ -7,7 +7,7 @@
 int main() {
   clock_t end, start = clock();
 
-  int nMaxPoints = 81;
+  int nMaxPoints = 641;
   int nPoints = 11;
   int nFinerPoints = 2*(nPoints - 1) + 1;
 
