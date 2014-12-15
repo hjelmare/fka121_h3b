@@ -7,7 +7,7 @@
 int main() {
   clock_t end, start = clock();
 
-  int nCoarsePoints = 161;
+  int nCoarsePoints = 11;
   int nFinePoints = 2*(nCoarsePoints - 1) +1; // must be N = 2*(n-1)+1
 
   double chargeSeparation = 0.2;

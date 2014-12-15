@@ -30,7 +30,7 @@ end
 xlabel('x','FontSize',textStorlek)
 ylabel('\Phi(x,1/2)','FontSize',textStorlek)
 
-h = legend('Exact solution','81','161','321','641','1281')
+h = legend('Exact solution','81','161','321','641','1281');
 set(h,'FontSize',legendStorlek);
 hold off
 
@@ -50,7 +50,9 @@ clf
 textStorlek = 14;
 legendStorlek = 11;
 
-data = dlmread('log321.data','\t');
+data = dlmread('log321.data','\t',1,0);
+data = data(:,1);
+data = data( data ~= 0 );
 
 semilogy(data,'x-')
 
@@ -62,16 +64,39 @@ set(h,'FontSize',legendStorlek);
 
 saveas(gcf,'task3_depth.png','png')
 
-%% times - not used right now
+%% single plots below - debugging
 
-times = [0.05,0.45,3.01,17.1];
-times2 = [0.05,0.44,2.99,16.9];
 
-avgTimes = times + times2;
-avgTimes = avgTimes/2;
+clear all
+clc
+clf
 
-plot(avgTimes,'r')
+cc = [ 0 1 1 ; 1 0 1 ; 0 1 0 ; 0 0 1 ; 1 0 0];
+textStorlek = 14;
+legendStorlek = 11;
+
+exactData = dlmread('../phi_exact.data','\t');
+xExactData = linspace(0,1,length(exactData));
+plot(xExactData,exactData,'k')
+
 hold on
-plot(0.05*[1 2 4 8].^2.8)
+
+filename = ['grid.data'];
+
+data = dlmread(filename,'\t');
+data = data(:,1:end-1);
+%data = data(:,fix(end/2)+1);
+
+surf(data)
+
+xData = linspace(0,1,length(data));
+
+plot(xData,data,'Color',cc(1,:))
+
+xlabel('x','FontSize',textStorlek)
+ylabel('\Phi(x,1/2)','FontSize',textStorlek)
+
+h = legend('Exact solution','Data')
+set(h,'FontSize',legendStorlek);
 hold off
 

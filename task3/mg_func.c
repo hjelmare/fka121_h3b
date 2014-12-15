@@ -60,12 +60,12 @@ void Multigrid(int nPoints, double totalLength, double** grid, double** source, 
 
   if ( nPoints <= COARSESTPOINTS ) {
     while (maxDiff > tolerance ) {
-      maxDiff = GaussSeidel(nPoints, totalLength, grid, source);
+      maxDiff = GaussSeidel(nPoints, totalLength, grid, source, fLog);
     }
-    fprintf(fLog, "%d\n",nPoints);
+    fprintf(fLog, "%d\t0\n",nPoints);
   } else {
     for( i = 0 ; i < nPresmooth ; i++ ) {
-      GaussSeidel( nPoints, totalLength, grid, source);
+      GaussSeidel( nPoints, totalLength, grid, source, fLog);
     }
 
     ComputeResidual(nPoints, totalLength, grid, source, residual);
@@ -78,10 +78,10 @@ void Multigrid(int nPoints, double totalLength, double** grid, double** source, 
       }
     }
     
-    fprintf(fLog,"%d\n", nPoints);
+    fprintf(fLog,"%d\t0\n", nPoints);
     for ( k = 0 ; k < gamma ; k++) {
       Multigrid(nCoarsePoints, totalLength, v, coarseResidual, fLog);
-      fprintf(fLog,"%d\n", nPoints);
+      fprintf(fLog,"%d\t0\n", nPoints);
     }
     IncreaseGridDensity(nCoarsePoints, v, fineV);
 
@@ -92,7 +92,7 @@ void Multigrid(int nPoints, double totalLength, double** grid, double** source, 
     }
 
     for ( i = 0 ; i < nPostsmooth ; i++ ) {
-      GaussSeidel( nPoints, totalLength, grid, source);
+      GaussSeidel( nPoints, totalLength, grid, source, fLog);
     }
   }
 
@@ -100,11 +100,11 @@ void Multigrid(int nPoints, double totalLength, double** grid, double** source, 
 }
 
 
-double GaussSeidel(int nPoints, double totalLength, double** grid, double** rho) {
+double GaussSeidel(int nPoints, double totalLength, double** grid, double** rho, FILE *fLog) {
   double maxDiff = 0;
   double cellLength = totalLength/ (double) (nPoints-1);
   double oldValue, diff;
-  int x,y;
+  int x,y, count = 0;
 
   for ( x = 1 ; x < nPoints - 1 ; x++ ) {
     for ( y = 1 ; y < nPoints - 1 ; y++ ) {
@@ -112,8 +112,11 @@ double GaussSeidel(int nPoints, double totalLength, double** grid, double** rho)
       grid[x][y] = 1.0/4.0 * (grid[x+1][y] + grid[x-1][y] + grid[x][y+1] + grid[x][y-1] - pow(cellLength,2)*rho[x][y]);
       diff = fabs(oldValue - grid[x][y]);
       maxDiff = diff > maxDiff ? diff : maxDiff;
+      count++;
     }
   }
+
+  fprintf(fLog, "0\t%d\n", count);
 
   return(maxDiff);
 }

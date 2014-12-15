@@ -30,15 +30,9 @@ ylabel('\Phi(x,1/2)', 'FontSize', textStorlek);
 text=legend('Simulated result', 'Exact result');
 set(text, 'FontSize', legendStorlek);
 
-%% times
+saveas(gcf,'task1.png','png')
 
-times = [0.05,0.45,3.01,17.1];
-times2 = [0.05,0.44,2.99,16.9];
+axis([0.58 0.62 0.3 1.42])
 
-avgTimes = times + times2;
-avgTimes = avgTimes/2;
+saveas(gcf,'task1_zoom.png','png')
 
-plot(avgTimes,'r')
-hold on
-plot(0.05*[1 2 4 8].^2.8)
-hold off
