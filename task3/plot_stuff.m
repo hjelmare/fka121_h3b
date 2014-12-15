@@ -50,9 +50,10 @@ clf
 textStorlek = 14;
 legendStorlek = 11;
 
-data = dlmread('log321.data','\t');
+data = dlmread('log161.data','\t');
 
 semilogy(data,'x-')
+set(gca, 'YTick', [0 11 21 41 81 161 321 641 1281]);
 
 xlabel('Iterations','FontSize',textStorlek)
 ylabel('Number of points','FontSize',textStorlek)

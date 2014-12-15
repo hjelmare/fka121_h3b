@@ -95,7 +95,8 @@ savename = 'task2_w_depth.png';
 data = data(:,1);
 data = data( data ~= 0 );
 
-semilogy(data,'x-')
+semilogy(data,'x-');
+set(gca, 'YTick', [0 11 21 41 81 161 321 641 1281]);
 
 xlabel('Step nr','FontSize',textStorlek)
 ylabel('Number of points','FontSize',textStorlek)
@@ -131,16 +132,21 @@ for i = 1:5
 end
 
 xData = [81 161 321 641 1281];
+yBehavior = xData.^2;
+yBehavior = yBehavior * yV(1)/yBehavior(1);
+yBehavior = yBehavior ;
+
 
 plot(xData, yV,'r')
 hold on
 plot(xData, yW,'b')
+plot(xData, yBehavior, 'g')
 hold off
 
 xlabel('Grid size','FontSize',textStorlek)
 ylabel('Number of GS iterations','FontSize',textStorlek)
 
-h = legend('V-cycle', 'W-cycle');
+h = legend('V-cycle', 'W-cycle', '(Grid size)^2');
 set(h,'FontSize',legendStorlek);
 
 saveas(gcf,'task2_its.png','png')
