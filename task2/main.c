@@ -9,7 +9,10 @@ int main() {
 
   int nPoints = 81;
   FILE *fGrid = fopen("grid81w.data","w");
-  int gamma = 1;
+  int gamma = 2;
+  FILE *fLog = fopen("log81w.data","w");
+  fprintf(fLog, "Points\t GS its\n");
+
   double tolerance = 0.00001;
 
   double chargeSeparation = 0.2;
@@ -31,8 +34,6 @@ int main() {
   rho[nPoints / 2 + chargeOffset][nPoints / 2 ] = -1.0 / pow(cellLength,2);
   rho[nPoints / 2 - chargeOffset][nPoints / 2 ] = 1.0 / pow(cellLength,2);
   
-  FILE *fLog = fopen("log.data","w");
-
   while ( maxDiff > tolerance ) {
     Multigrid(gamma, nPoints, totalLength, grid, rho, fLog);
     maxDiff = 0;

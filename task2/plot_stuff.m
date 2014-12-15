@@ -1,4 +1,4 @@
-%% potential plot
+%% potential plot - v-cycle
 
 clear all
 clc
@@ -15,7 +15,7 @@ plot(xExactData,exactData,'k')
 hold on
 
 for i = 1:5
-    filename = ['grid' num2str(2^(i+2)) num2str(1) '.data'];
+    filename = ['grid' num2str(2^(i+2)) num2str(1) 'v.data'];
 
     data = dlmread(filename,'\t');
     data = data(:,1:end-1);
@@ -29,15 +29,56 @@ end
 xlabel('x','FontSize',textStorlek)
 ylabel('\Phi(x,1/2)','FontSize',textStorlek)
 
-h = legend('Exact solution','81','161','321','641','1281')
+h = legend('Exact solution','81 V-cycle','161 V-cycle','321 V-cycle','641 V-cycle','1281 V-cycle')
 set(h,'FontSize',legendStorlek);
 hold off
 
-saveas(gcf,'task2.png','png')
+saveas(gcf,'task2v.png','png')
 
 axis([0.58 0.62 0.3 1.42])
 
-saveas(gcf,'task2_zoom.png','png')
+saveas(gcf,'task2v_zoom.png','png')
+
+%% potential plot - w-cycle
+
+clear all
+clc
+clf
+
+cc = [ 0 1 1 ; 1 0 1 ; 0 1 0 ; 0 0 1 ; 1 0 0];
+textStorlek = 14;
+legendStorlek = 11;
+
+exactData = dlmread('../phi_exact.data','\t');
+xExactData = linspace(0,1,length(exactData));
+plot(xExactData,exactData,'k')
+
+hold on
+
+for i = 1:5
+    filename = ['grid' num2str(2^(i+2)) num2str(1) 'w.data'];
+
+    dataV = dlmread(filename,'\t');
+    dataV = dataV(:,1:end-1);
+    dataV = dataV(:,fix(end/2)+1);
+
+    xData = linspace(0,1,length(dataV));
+
+    plot(xData,dataV,'Color',cc(i,:))
+end
+
+xlabel('x','FontSize',textStorlek)
+ylabel('\Phi(x,1/2)','FontSize',textStorlek)
+
+h = legend('Exact solution','81 W-cycle','161 W-cycle','321 W-cycle','641 W-cycle','1281 W-cycle')
+set(h,'FontSize',legendStorlek);
+hold off
+
+saveas(gcf,'task2w.png','png')
+
+axis([0.58 0.62 0.3 1.42])
+
+saveas(gcf,'task2w_zoom.png','png')
 
 
 %% depth
@@ -49,29 +90,57 @@ clf
 textStorlek = 14;
 legendStorlek = 11;
 
-data = dlmread('log.data','\t');
+data = dlmread('log81w.data','\t',1,0);
+savename = 'task2_w_depth.png';
+data = data(:,1);
+data = data( data ~= 0 );
 
 semilogy(data,'x-')
 
-xlabel('Iterations','FontSize',textStorlek)
+xlabel('Step nr','FontSize',textStorlek)
 ylabel('Number of points','FontSize',textStorlek)
 
 h = legend('Number of grid points');
 set(h,'FontSize',legendStorlek);
 
 
-%saveas(gcf,'task2_depth.png','png')
+saveas(gcf,savename,'png')
 
-%% times - not used right now
+%% nIterations
 
-times = [0.05,0.45,3.01,17.1];
-times2 = [0.05,0.44,2.99,16.9];
+clear all
+clc
+clf
 
-avgTimes = times + times2;
-avgTimes = avgTimes/2;
+textStorlek = 14;
+legendStorlek = 11;
+for i = 1:5
+    filename = ['log' num2str(2^(i+2)) num2str(1) 'v.data'];
+    
+    data = dlmread(filename,'\t',1,0);
+    data = data(:,2);
+    data = data( data ~= 0 );
+    yV(i) = sum(data);
+    
+    filename = ['log' num2str(2^(i+2)) num2str(1) 'w.data'];
+    
+    data = dlmread(filename,'\t',1,0);
+    data = data(:,2);
+    data = data( data ~= 0 );
+    yW(i) = sum(data);   
+end
 
-plot(avgTimes,'r')
+xData = [81 161 321 641 1281];
+
+plot(xData, yV,'r')
 hold on
-plot(0.05*[1 2 4 8].^2.8)
+plot(xData, yW,'b')
 hold off
 
+xlabel('Grid size','FontSize',textStorlek)
+ylabel('Number of GS iterations','FontSize',textStorlek)
+
+h = legend('V-cycle', 'W-cycle');
+set(h,'FontSize',legendStorlek);
+
+saveas(gcf,'task2_its.png','png')
