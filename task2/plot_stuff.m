@@ -24,7 +24,6 @@ for i = 1:5
     xData = linspace(0,1,length(data));
 
     plot(xData,data,'Color',cc(i,:))
-
 end
 
 xlabel('x','FontSize',textStorlek)
@@ -34,11 +33,11 @@ h = legend('Exact solution','81','161','321','641','1281')
 set(h,'FontSize',legendStorlek);
 hold off
 
-saveas(gcf,'task3.png','png')
+saveas(gcf,'task2.png','png')
 
 axis([0.58 0.62 0.3 1.42])
 
-saveas(gcf,'task3_zoom.png','png')
+saveas(gcf,'task2_zoom.png','png')
 
 
 %% depth
@@ -50,7 +49,7 @@ clf
 textStorlek = 14;
 legendStorlek = 11;
 
-data = dlmread('log321.data','\t');
+data = dlmread('log.data','\t');
 
 semilogy(data,'x-')
 
@@ -61,7 +60,7 @@ h = legend('Number of grid points');
 set(h,'FontSize',legendStorlek);
 
 
-saveas(gcf,'task3_depth.png','png')
+%saveas(gcf,'task2_depth.png','png')
 
 %% times - not used right now
 

@@ -9,33 +9,43 @@ int main() {
 
   int nPoints = 81;
   FILE *fGrid = fopen("grid81w.data","w");
-  int gamma = 2;
+  int gamma = 1;
+  double tolerance = 0.00001;
 
   double chargeSeparation = 0.2;
   double totalLength = 1;
   double cellLength = totalLength / (nPoints - 1);
   int chargeOffset = chargeSeparation / 2 / cellLength;
+  double maxDiff = 2*tolerance;
+  double diff;
 
   double **grid;
+  double **oldGrid;
   double **rho;
-  grid = (double**) malloc(nPoints * sizeof(double*));
-  rho = (double**) malloc(nPoints * sizeof(double*));
+  Allocate2dSq(nPoints, &grid);
+  Allocate2dSq(nPoints, &oldGrid);
+  Allocate2dSq(nPoints, &rho);
   
   int x, y, i;
 
-  // Initializing
-  for ( x = 0 ; x < nPoints ; x++ ) {
-    grid[x] = (double*) calloc(nPoints, sizeof(double));
-    rho[x] = (double*) calloc(nPoints, sizeof(double));
-  }
-  
   rho[nPoints / 2 + chargeOffset][nPoints / 2 ] = -1.0 / pow(cellLength,2);
   rho[nPoints / 2 - chargeOffset][nPoints / 2 ] = 1.0 / pow(cellLength,2);
-  // End of init part
   
   FILE *fLog = fopen("log.data","w");
+
+  while ( maxDiff > tolerance ) {
+    Multigrid(gamma, nPoints, totalLength, grid, rho, fLog);
+    maxDiff = 0;
+    for ( x = 0 ; x < nPoints; x++ ) {
+      for ( y = 0 ; y < nPoints; y++ ) {
+        diff = fabs( grid[x][y] - oldGrid[x][y] );
+        maxDiff = maxDiff > diff ? maxDiff : diff;
+        
+        oldGrid[x][y] = grid[x][y];
+      }
+    }
+  }
   
-  Multigrid(gamma, nPoints, totalLength, grid, rho, fLog);
 
   fclose(fLog);
 
@@ -53,6 +63,10 @@ int main() {
 
   end = clock();
 
+  Free2dSq(nPoints, grid);
+  Free2dSq(nPoints, oldGrid);
+  Free2dSq(nPoints, rho);
+  
   printf("Done! (%e s)\n",((double)(end-start) / CLOCKS_PER_SEC));
 
   return 0;
