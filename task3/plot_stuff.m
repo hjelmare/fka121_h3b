@@ -63,7 +63,7 @@ ylabel('Number of points','FontSize',textStorlek)
 h = legend('Number of grid points');
 set(h,'FontSize',legendStorlek);
 
-saveas(gcf,'task3_depth.png','png')
+%saveas(gcf,'task3_depth.png','png')
 
 %% single plots below - debugging
 
@@ -86,9 +86,9 @@ filename = ['grid.data'];
 
 data = dlmread(filename,'\t');
 data = data(:,1:end-1);
-%data = data(:,fix(end/2)+1);
+data = data(:,fix(end/2)+1);
 
-surf(data)
+%surf(data)
 
 xData = linspace(0,1,length(data));
 

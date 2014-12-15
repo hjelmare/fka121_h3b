@@ -12,8 +12,8 @@ int main() {
   int nPoints = nMinPoints;
   int nFinerPoints = 2*(nPoints - 1) + 1;
   
-  FILE *fLog = fopen("log1281.data","w");
-  FILE *fGrid = fopen("grid1281.data","w");
+  FILE *fLog = fopen("log.data","w");
+  FILE *fGrid = fopen("grid.data","w");
   double tolerance = 0.00001;
 
   double chargeSeparation = 0.2;
@@ -27,6 +27,7 @@ int main() {
   double **grid;
   double **newGrid;
   double **oldGrid;
+  double **saveGrid;
   double **rho;
   
   int x, y;
@@ -36,6 +37,7 @@ int main() {
   // initiera grid och rho på grövsta gridsize
   Allocate2dSq(nPoints, &grid);
   Allocate2dSq(nMaxPoints, &oldGrid);
+  Allocate2dSq(nMaxPoints, &saveGrid);
   Allocate2dSq(nPoints, &rho);
   
   rho[nPoints / 2 + chargeOffset][nPoints / 2 ] = -1.0 / pow(cellLength,2);
@@ -47,9 +49,17 @@ int main() {
     nPoints = nMinPoints;
     nFinerPoints = 2*(nPoints-1)+1;
 
-    while( nPoints < nMaxPoints){
+    while( nPoints <= nMaxPoints){
       // Run multigrid
       Multigrid(nPoints, totalLength, grid, rho, fLog);
+
+      if ( nPoints == nMaxPoints ) {
+        for ( x = 0 ; x < nPoints ; x++ ) {
+          for ( y = 0 ; y < nPoints ; y++ ) {
+            saveGrid[x][y] = grid[x][y];
+          }
+        }
+      }
 
       // Interpolate the result to higher gridsize
       Allocate2dSq(nFinerPoints, &newGrid);
@@ -73,7 +83,7 @@ int main() {
       rho[nPoints / 2 - chargeOffset][nPoints / 2 ] = 1.0 / pow(cellLength,2);
 
     }
-    fprintf(fLog, "%d\t0\n",nPoints);
+//    fprintf(fLog, "%d\t0\n",nPoints);
     nPoints = (nPoints-1)/2 + 1;
 
     for(x = 0 ; x < nPoints ; x++ ) {
@@ -88,7 +98,7 @@ int main() {
   int nPlotPoints = nMaxPoints;
   for ( x = 0 ; x < nPlotPoints ; x++ ) {
     for (  y = 0 ; y < nPlotPoints ; y++ ) {
-      fprintf(fGrid,"%e\t",grid[x][y]);
+      fprintf(fGrid,"%e\t",saveGrid[x][y]);
 
     }
     fprintf(fGrid,"\n");
