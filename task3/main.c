@@ -7,13 +7,13 @@
 int main() {
   clock_t end, start = clock();
 
-  int nMaxPoints = 1281;
+  int nMaxPoints = 81;
   int nMinPoints = 11;
   int nPoints = nMinPoints;
   int nFinerPoints = 2*(nPoints - 1) + 1;
   
-  FILE *fLog = fopen("log.data","w");
-  FILE *fGrid = fopen("grid.data","w");
+  FILE *fLog = fopen("log81.data","w");
+  FILE *fGrid = fopen("grid81.data","w");
   double tolerance = 0.00001;
 
   double chargeSeparation = 0.2;

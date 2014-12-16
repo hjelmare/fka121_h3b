@@ -63,7 +63,24 @@ ylabel('Number of points','FontSize',textStorlek)
 h = legend('Number of grid points');
 set(h,'FontSize',legendStorlek);
 
-%saveas(gcf,'task3_depth.png','png')
+saveas(gcf,'task3_depth.png','png')
+
+%% nIterations
+
+for i = 1:5
+    filename = ['log' num2str(2^(i+2)) num2str(1) '.data'];
+
+    data = dlmread(filename,'\t',1,0);
+    data = data(:,2);
+    y(i) = sum(data);
+    
+    %xData = linspace(0,1,length(data));
+
+    %plot(xData,data,'Color',cc(i,:))
+
+end
+
+plot(y)
 
 %% single plots below - debugging
 

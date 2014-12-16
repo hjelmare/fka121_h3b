@@ -129,6 +129,13 @@ for i = 1:5
     data = data(:,2);
     data = data( data ~= 0 );
     yW(i) = sum(data);   
+    
+    filename = ['../task3/log' num2str(2^(i+2)) num2str(1) '.data'];
+
+    data = dlmread(filename,'\t',1,0);
+    data = data(:,2);
+    yFMG(i) = sum(data);
+    
 end
 
 xData = [81 161 321 641 1281];
@@ -140,13 +147,14 @@ yBehavior = yBehavior ;
 plot(xData, yV,'r')
 hold on
 plot(xData, yW,'b')
-plot(xData, yBehavior, 'g')
+plot(xData, yFMG,'g')
+plot(xData, yBehavior, 'k')
 hold off
 
 xlabel('Grid size','FontSize',textStorlek)
 ylabel('Number of GS iterations','FontSize',textStorlek)
 
-h = legend('V-cycle', 'W-cycle', '(Grid size)^2');
+h = legend('V-cycle', 'W-cycle', 'Full multigrid', '(Grid size)^2');
 set(h,'FontSize',legendStorlek);
 
 saveas(gcf,'task2_its.png','png')
